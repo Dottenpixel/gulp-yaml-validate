@@ -9,8 +9,6 @@ import BufferStreams from 'bufferstreams';
 const PLUGIN_NAME = 'gulp-yaml-validate';
 
 import yaml from 'js-yaml';
-import {init} from 'check-type';
-const check = init();
 
 const yaml2json = (buffer, options) => {
     const htmlRe = /(<([^>]+)>)/ig;

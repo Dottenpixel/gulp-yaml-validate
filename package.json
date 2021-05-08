@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "bufferstreams": "^1.0.1",
-    "check-type": "^0.4.11",
     "extend": "^2.0.1",
     "gulp-util": "^3.0.5",
     "js-yaml": "^3.3.1",

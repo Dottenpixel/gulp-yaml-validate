@@ -48,41 +48,37 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	
+
 	var _interopRequireDefault = __webpack_require__(2)['default'];
-	
+
 	var _through2 = __webpack_require__(3);
-	
+
 	var _through22 = _interopRequireDefault(_through2);
-	
+
 	var _path = __webpack_require__(4);
-	
+
 	var _path2 = _interopRequireDefault(_path);
-	
+
 	var _gulpUtil = __webpack_require__(5);
-	
+
 	var _gulpUtil2 = _interopRequireDefault(_gulpUtil);
-	
+
 	var _jsYaml = __webpack_require__(1);
-	
+
 	var _jsYaml2 = _interopRequireDefault(_jsYaml);
-	
+
 	var _extend = __webpack_require__(6);
-	
+
 	var _extend2 = _interopRequireDefault(_extend);
-	
+
 	var _bufferstreams = __webpack_require__(7);
-	
+
 	var _bufferstreams2 = _interopRequireDefault(_bufferstreams);
-	
+
 	var _jsYaml3 = _interopRequireDefault(_jsYaml);
-	
-	var _checkType = __webpack_require__(8);
-	
+
 	var PLUGIN_NAME = 'gulp-yaml-validate';
-	
-	var check = (0, _checkType.init)();
-	
+
 	var yaml2json = function yaml2json(buffer, options) {
 	  var htmlRe = /(<([^>]+)>)/ig;
 	  var contents = buffer.toString('utf8');
@@ -93,7 +89,7 @@ module.exports =
 	    return new Buffer(JSON.stringify(ymlDocument, options.replacer, options.space));
 	  }
 	};
-	
+
 	module.exports = function (options) {
 	  var options = (0, _extend2['default'])({
 	    safe: false,
@@ -101,7 +97,7 @@ module.exports =
 	    replacer: null,
 	    space: null
 	  }, options);
-	
+
 	  return _through22['default'].obj(function (file, enc, cb) {
 	    var self = this;
 	    if (file.isBuffer()) {
@@ -157,13 +153,13 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	
+
 	exports["default"] = function (obj) {
 	  return obj && obj.__esModule ? obj : {
 	    "default": obj
 	  };
 	};
-	
+
 	exports.__esModule = true;
 
 /***/ },
@@ -195,12 +191,6 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = require("bufferstreams");
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = require("check-type");
 
 /***/ }
 /******/ ]);
