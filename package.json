@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup --config",
-    "test": "mocha ./test/spec.js"
+    "test": "rollup test/index.js --file test/main-spec.js --format cjs && npx mocha test/main-spec.js"
   },
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
     "extend": "^2.0.1",
     "gulp-util": "^3.0.5",
     "js-yaml": "^3.3.1",
+    "mocha": "^8.4.0",
     "rollup": "^2.47.0",
     "through2": "^2.0.0"
   }

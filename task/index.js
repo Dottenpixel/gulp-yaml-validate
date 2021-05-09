@@ -21,7 +21,7 @@ const yaml2json = (buffer, options) => {
     }
 };
 
-module.exports = function(options) {
+export default function(options) {
   var options = extend({
     safe: false,
     html: false,

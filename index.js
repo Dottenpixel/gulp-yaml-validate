@@ -29,7 +29,7 @@ const yaml2json = (buffer, options) => {
     }
 };
 
-module.exports = function(options) {
+function index(options) {
   var options = extend__default['default']({
     safe: false,
     html: false,
@@ -84,4 +84,6 @@ module.exports = function(options) {
     this.push(file);
     cb();
   });
-};
+}
+
+module.exports = index;

@@ -1,95 +1,11 @@
 'use strict';
 
-require('should');
-var through = require('through2');
-var path = require('path');
-var gutil = require('gulp-util');
-var jsyaml = require('js-yaml');
-var extend = require('extend');
-var BufferStreams = require('bufferstreams');
-var es = require('event-stream');
-var fs = require('fs');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var through__default = /*#__PURE__*/_interopDefaultLegacy(through);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var gutil__default = /*#__PURE__*/_interopDefaultLegacy(gutil);
-var jsyaml__default = /*#__PURE__*/_interopDefaultLegacy(jsyaml);
-var extend__default = /*#__PURE__*/_interopDefaultLegacy(extend);
-var BufferStreams__default = /*#__PURE__*/_interopDefaultLegacy(BufferStreams);
-var es__default = /*#__PURE__*/_interopDefaultLegacy(es);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-
-const PLUGIN_NAME = 'gulp-yaml-validate';
-
-const yaml2json = (buffer, options) => {
-    const htmlRe = /(<([^>]+)>)/ig;
-    let contents = buffer.toString('utf8');
-    if(options.html && htmlRe.test(contents)) {
-      throw new Error('YML cannot contain HTML');
-    } else {
-      let ymlDocument = options.safe ? jsyaml__default['default'].safeLoad(contents) : jsyaml__default['default'].load(contents);
-      return new Buffer(JSON.stringify(ymlDocument, options.replacer, options.space));
-    }
-};
-
-function yaml(options) {
-  var options = extend__default['default']({
-    safe: false,
-    html: false,
-    replacer: null,
-    space: null
-  }, options);
-
-  return through__default['default'].obj(function(file, enc, cb) {
-    const self = this;
-    if (file.isBuffer()) {
-      if (file.contents.length === 0) {
-        let msg = `File ${path__default['default'].dirname(file.path)} is empty`;
-        this.emit('error', new gutil.PluginError(PLUGIN_NAME, msg));
-        return cb();
-      }
-      try {
-        file.contents = yaml2json(file.contents, options);
-        file.path = gutil__default['default'].replaceExtension(file.path, '.json');
-      }
-      catch (error) {
-        let msg = `${error.message} => ${file.path}`;
-        this.emit('error', new gutil.PluginError(PLUGIN_NAME, msg));
-        return cb();
-      }
-    }
-    else if (file.isStream()) {
-      file.contents = file.contents.pipe(new BufferStreams__default['default']((err, buf, cb) => {
-        if (err) {
-          self.emit('error', new gutil.PluginError(PLUGIN_NAME, err.message));
-        }
-        else {
-          if (buf.length === 0) {
-            let msg = `File ${path__default['default'].dirname(file.path)} is empty`;
-            let error = new gutil.PluginError(PLUGIN_NAME, msg);
-            self.emit('error', error);
-            cb(error);
-          }
-          else {
-            try {
-              file.path = gutil__default['default'].replaceExtension(file.path, '.json');
-              cb(null, yaml2json(buf, options));
-            }
-            catch (error) {
-              let msg = `${error.message} => ${file.path}`;
-              self.emit('error', new gutil.PluginError(PLUGIN_NAME, msg));
-              cb(error);
-            }
-          }
-        }
-      }));
-    }
-    this.push(file);
-    cb();
-  });
-}
+import 'should';
+import yaml from '../task/index.js';
+import gutil, {File} from 'gulp-util';
+import es from 'event-stream';
+import fs from 'fs';
+import path from 'path';
 
 describe('gulp-yaml-validate', () => {
 
@@ -105,32 +21,32 @@ describe('gulp-yaml-validate', () => {
     describe('in buffer mode', () => {
 
         beforeEach(() => {
-            emptyFile = new gutil.File({
+            emptyFile = new File({
                 path: 'test/empty.yml',
                 cwd: 'test',
                 contents: new Buffer.from('')
             });
-            unsafeFile = new gutil.File({
+            unsafeFile = new File({
                 path: 'test/unsafe.yml',
                 cwd: 'test',
-                contents: fs__default['default'].readFileSync('test/unsafe.yml')
+                contents: fs.readFileSync('test/unsafe.yml')
             });
-            validFile = new gutil.File({
+            validFile = new File({
                 path: 'test/valid.yml',
                 cwd: 'test',
-                contents: fs__default['default'].readFileSync('test/valid.yml')
+                contents: fs.readFileSync('test/valid.yml')
             });
-            invalidFile = new gutil.File({
+            invalidFile = new File({
                 path: 'test/invalid.yml',
                 cwd: 'test',
-                contents: fs__default['default'].readFileSync('test/invalid.yml')
+                contents: fs.readFileSync('test/invalid.yml')
             });
-            htmlFile = new gutil.File({
+            htmlFile = new File({
                 path: 'test/html.yml',
                 cwd: 'test',
-                contents: fs__default['default'].readFileSync('test/html.yml')
+                contents: fs.readFileSync('test/html.yml')
             });
-            nullFile = new gutil.File({
+            nullFile = new File({
                 cwd: 'test',
                 contents: null
             });
@@ -141,7 +57,7 @@ describe('gulp-yaml-validate', () => {
 
             stream.once('data', (file) => {
                 file.contents.toString('utf8').should.equal('{"root":{"key":"value"}}');
-                path__default['default'].extname(file.path).should.equal('.json');
+                path.extname(file.path).should.equal('.json');
                 done();
             });
 
@@ -154,7 +70,7 @@ describe('gulp-yaml-validate', () => {
 
             stream.once('data', (file) => {
                 file.contents.toString('utf8').should.equal('{"root":{"key":"value"}}');
-                path__default['default'].extname(file.path).should.equal('.json');
+                path.extname(file.path).should.equal('.json');
                 done();
             });
 
@@ -167,7 +83,7 @@ describe('gulp-yaml-validate', () => {
 
             stream.once('data', (file) => {
                 file.isNull().should.equal(true);
-                path__default['default'].extname(file.path).should.equal('');
+                path.extname(file.path).should.equal('');
                 done();
             });
 
@@ -179,7 +95,7 @@ describe('gulp-yaml-validate', () => {
             var stream = yaml();
 
             stream.once('error', (error) => {
-                error.message.should.equal('File ' + path__default['default'].dirname(emptyFile.path) +
+                error.message.should.equal('File ' + path.dirname(emptyFile.path) +
                 ' is empty');
                 done();
             });
@@ -225,30 +141,30 @@ describe('gulp-yaml-validate', () => {
     describe('in stream mode', () => {
 
         beforeEach(() => {
-            emptyFile = new gutil__default['default'].File({
+            emptyFile = new gutil.File({
                 path: 'test/empty.yml',
                 cwd: 'test',
-                contents: fs__default['default'].createReadStream('test/empty.yml')
+                contents: fs.createReadStream('test/empty.yml')
             });
-            unsafeFile = new gutil.File({
+            unsafeFile = new File({
                 path: 'test/unsafe.yml',
                 cwd: 'test',
-                contents: fs__default['default'].createReadStream('test/unsafe.yml')
+                contents: fs.createReadStream('test/unsafe.yml')
             });
-            validFile = new gutil.File({
+            validFile = new File({
                 path: 'test/valid.yml',
                 cwd: 'test',
-                contents: fs__default['default'].createReadStream('test/valid.yml')
+                contents: fs.createReadStream('test/valid.yml')
             });
-            invalidFile = new gutil.File({
+            invalidFile = new File({
                 path: 'test/invalid.yml',
                 cwd: 'test',
-                contents: fs__default['default'].createReadStream('test/invalid.yml')
+                contents: fs.createReadStream('test/invalid.yml')
             });
-            htmlFile = new gutil.File({
+            htmlFile = new File({
                 path: 'test/html.yml',
                 cwd: 'test',
-                contents: fs__default['default'].createReadStream('test/html.yml')
+                contents: fs.createReadStream('test/html.yml')
             });
         });
 
@@ -256,9 +172,9 @@ describe('gulp-yaml-validate', () => {
             var stream = yaml();
 
             stream.once('data', (file) => {
-                file.contents.pipe(es__default['default'].wait((err, data) => {
+                file.contents.pipe(es.wait((err, data) => {
                     data.toString('utf8').should.equal('{"root":{"key":"value"}}');
-                    path__default['default'].extname(file.path).should.equal('.json');
+                    path.extname(file.path).should.equal('.json');
                     done();
                 }));
             });
@@ -272,7 +188,7 @@ describe('gulp-yaml-validate', () => {
 
             stream.once('data', (file) => {
                 file.isNull().should.equal(true);
-                path__default['default'].extname(file.path).should.equal('');
+                path.extname(file.path).should.equal('');
                 done();
             });
 
@@ -284,7 +200,7 @@ describe('gulp-yaml-validate', () => {
             var stream = yaml();
 
             stream.once('error', (error) => {
-                error.message.should.equal('File ' + path__default['default'].dirname(emptyFile.path) +
+                error.message.should.equal('File ' + path.dirname(emptyFile.path) +
                 ' is empty');
                 done();
             });
